@@ -1,8 +1,9 @@
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("game-block");
 const ctx = canvas.getContext("2d");
-const startButton = document.getElementById("start-button");
-const scoreElement = document.getElementById("score");
 const currentInputElement = document.getElementById("current-input");
+const startButton = document.getElementById("start-button");
+const scoreElement = document.getElementById("score-value");
+const timerElement = document.getElementById("timer-value");
 const planetsAndStars = [
   "Mercury",
   "Venus",
@@ -26,10 +27,8 @@ const planetsAndStars = [
   "Kamino",
   "Geonosis",
   "Mustafar",
-  "Yavin IV",
   "Jakku",
   "Takodana",
-  "D'Qar",
   "Crait",
   "Exegol",
   "Scarif",
@@ -38,19 +37,21 @@ const planetsAndStars = [
   "Jedha",
   "Pasaana",
   "Kijimi",
-  "Kef Bir",
 ];
 
 let fallingWords = [];
 let currentInput = "";
 let score = 0;
 let gameInterval;
+let gameOver = false;
 
-function randomDelay(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+/**
+ * Function to add a new falling word to the game
+ */
 
 function addFallingWord() {
+  if (gameOver) return;
+
   const randomIndex = Math.floor(Math.random() * planetsAndStars.length);
   const randomPlanetOrStar = planetsAndStars[randomIndex];
   fallingWords.push({
@@ -59,14 +60,14 @@ function addFallingWord() {
     y: 0,
   });
 
-  scoreElement.innerText = "Score: " + score;
+  scoreElement.innerText = score;
 
-  setTimeout(addFallingWord, randomDelay(700, 1500));
+  setTimeout(addFallingWord, 1000);
 }
 
-function addFallingWordWithRandomDelay() {
-  setTimeout(addFallingWord, randomDelay(700, 1500));
-}
+/**
+ * Function to draw the falling words on the canvas
+ */
 
 function drawFallingWords() {
   ctx.font = "20px Arial";
@@ -76,8 +77,12 @@ function drawFallingWords() {
   });
 }
 
+/**
+ * Function to update the position of falling words
+ */
+
 function updateFallingWords() {
-  const difficultyMultiplier = 0.5 + score / 3;
+  const difficultyMultiplier = 1.7 + score / 5;
   fallingWords.forEach((wordObj) => {
     wordObj.y += 0.1 * difficultyMultiplier;
   });
@@ -86,7 +91,7 @@ function updateFallingWords() {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     currentInput = currentInput.slice(0, -1);
-  } else if (e.key.length === 1) {
+  } else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
     currentInput += e.key;
   }
 
@@ -105,62 +110,91 @@ document.addEventListener("keydown", (e) => {
   currentInputElement.textContent = currentInput;
 });
 
+/**
+ * Function to draw and clear the falling words on the canvas
+ */
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFallingWords();
-  drawCurrentInput();
 }
 
-function drawCurrentInput() {
-  ctx.font = "20px Arial";
-  ctx.fillStyle = "black";
-  ctx.textAlign = "center";
-  ctx.fillText(currentInput, canvas.width / 2, canvas.height + 25);
-  ctx.textAlign = "left";
-}
-
-function displayFinalScore(finalScore) {
-  const scoreDiv = document.createElement("div");
-  scoreDiv.innerText = "Final Score: " + finalScore;
-  scoreDiv.style.position = "absolute";
-  scoreDiv.style.top = "50%";
-  scoreDiv.style.left = "50%";
-  scoreDiv.style.transform = "translate(-50%, -50%)";
-  scoreDiv.style.fontSize = "40px";
-  scoreDiv.style.fontWeight = "bold";
-  document.body.appendChild(scoreDiv);
-}
-
-function gameOver() {
-  clearInterval(gameInterval);
-  fallingWords = [];
-  currentInput = "";
-  currentInputElement.textContent = currentInput;
-  displayFinalScore(score);
-  score = 0;
-  scoreElement.textContent = score;
-}
+/**
+ * Function to update the position of falling words and check for game over
+ */
 
 function update() {
   updateFallingWords();
 
   if (fallingWords.some((wordObj) => wordObj.y > canvas.height)) {
-    gameOver();
-    location.reload();
+    gameOver = true;
+    gameOverDisplay();
   }
 }
 
-function gameLoop() {
-  update();
+/**
+ * Function to display game over message
+ */
+
+function gameOverDisplay() {
+  const gameOverDiv = document.createElement("div");
+  gameOverDiv.innerHTML = "Game Over";
+  gameOverDiv.classList.add("game-over");
+  canvas.parentElement.appendChild(gameOverDiv);
+  fallingWords = [];
   draw();
-  requestAnimationFrame(gameLoop);
 }
+
+/**
+ * Function to run the game loop
+ */
+
+function gameLoop() {
+  if (!gameOver) {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+/**
+ * Function to start the countdown timer
+ */
+
+function countdown() {
+  let remainingTime = 30;
+  timerElement.textContent = "0:30";
+
+  const timerInterval = setInterval(() => {
+    remainingTime--;
+
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+
+    timerElement.textContent = `${minutes}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+
+    if (remainingTime <= 0) {
+      if (!gameOver) {
+        gameOver = true;
+        gameOverDisplay();
+      }
+      clearInterval(timerInterval);
+    }
+  }, 1000);
+}
+
+/**
+ * Function to start the game
+ */
 
 function startGame() {
   startButton.disabled = true;
-  addFallingWordWithRandomDelay();
+  addFallingWord();
   gameLoop();
   scoreElement.style.display = "block";
+  countdown();
 }
 
 startButton.addEventListener("click", startGame);

@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Typing Game</title>
     <link rel="stylesheet" href="styles.css" />
+    <script defer src="typing-game.js"></script>
   </head>
   <body>
-    <div id="game-container">
-      <canvas id="game" width="800" height="600"></canvas>
-      <div id="current-input"></div>
-      <div id="score">Score: 0</div>
+    <div id="content-card">
+      <div id="game-container">
+        <div id="game-info">
+          <div id="score-block">
+            <p>Score:</p>
+            <p id="score-value">0</p>
+          </div>
+          <div id="timer-block">
+            <p id="timer-value">0:30</p>
+          </div>
+        </div>
+        <canvas id="game-block" width="800" height="600"></canvas>
+        <div id="current-input"></div>
+      </div>
+      <button id="start-button">Start</button>
     </div>
-    <button id="start-button">Start</button>
-    <script defer src="typing-game.js"></script>
   </body>
 </html>
