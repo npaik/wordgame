@@ -192,6 +192,10 @@ function update() {
   }
 }
 
+/**
+ * Function to display the highest score with user
+ */
+
 function fetchHighScore() {
   fetch("/get-high-score")
     .then((response) => response.json())
@@ -204,6 +208,12 @@ function fetchHighScore() {
     })
     .catch((error) => console.error("Error fetching high score:", error));
 }
+
+/**
+ * Function to upload the user and score to the database
+ * @param {name} name
+ * @param {score} score
+ */
 
 async function saveHighScore(name, score) {
   try {
@@ -227,6 +237,11 @@ async function saveHighScore(name, score) {
   }
 }
 
+/**
+ *  Function to handle the highest score achieved by the user
+ * @param {score} score
+ */
+
 function handleHighScoreName(score) {
   const name = prompt(
     "Congratulations! You have reached the highest score. Please enter your name:"
@@ -247,7 +262,7 @@ function gameOverDisplay() {
   if (score > highScore) {
     highScore = score;
     highScoreElement.textContent = highScore;
-    saveHighScore();
+    handleHighScoreName(score); // Change this line
   }
   startButton.disabled = false;
   highScoreElement.parentElement.style.display = "block";
