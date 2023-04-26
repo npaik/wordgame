@@ -11,17 +11,40 @@ const animatedWordsContainer = document.getElementById(
   "animatedWordsContainer"
 );
 
-let planetsAndStars = [];
-
-async function fetchPlanetsAndStars() {
-  try {
-    const response = await fetch("/planets-and-stars");
-    planetsAndStars = await response.json();
-  } catch (error) {
-    console.error("Error fetching planets and stars:", error);
-  }
-}
-fetchPlanetsAndStars();
+const planetsAndStars = [
+  "Mercury",
+  "Venus",
+  "Earth",
+  "Mars",
+  "Jupiter",
+  "Saturn",
+  "Uranus",
+  "Neptune",
+  "Sun",
+  "Moon",
+  "Pluto",
+  "Tatooine",
+  "Alderaan",
+  "Dagobah",
+  "Hoth",
+  "Endor",
+  "Naboo",
+  "Bespin",
+  "Coruscant",
+  "Kamino",
+  "Geonosis",
+  "Mustafar",
+  "Jakku",
+  "Takodana",
+  "Crait",
+  "Exegol",
+  "Scarif",
+  "Eadu",
+  "Wobani",
+  "Jedha",
+  "Pasaana",
+  "Kijimi",
+];
 
 let fallingWords = [];
 let currentInput = "";
