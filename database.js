@@ -1,23 +1,23 @@
-// database.js
+require("dotenv").config();
 
 const mysql = require("mysql2/promise");
 
 const is_qoddi = process.env.IS_QODDI || false;
 
 const dbConfigQoddi = {
-  host: "sql.freedb.tech",
-  user: "freedb_npaik",
-  password: "C?SmMr$E4aUgH$X",
-  database: "freedb_freedb_comp2350_A00567207",
+  host: process.env.QODDI_HOST,
+  user: process.env.QODDI_USER,
+  password: process.env.QODDI_PASSWORD,
+  database: process.env.QODDI_DATABASE,
   multipleStatements: false,
   namedPlaceholders: true,
 };
 
 const dbConfigLocal = {
-  host: "localhost",
-  user: "root",
-  password: "skrgus84",
-  database: "wordgame",
+  host: process.env.LOCAL_HOST,
+  user: process.env.LOCAL_USER,
+  password: process.env.LOCAL_PASSWORD,
+  database: process.env.LOCAL_DATABASE,
   multipleStatements: false,
   namedPlaceholders: true,
 };
