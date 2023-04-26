@@ -198,27 +198,45 @@ function fetchHighScore() {
     .then((data) => {
       if (data.success) {
         highScore = data.highScore;
-        highScoreElement.textContent = highScore;
+        const name = data.name ? ` - ${data.name}` : "";
+        highScoreElement.textContent = `${highScore}${name}`;
       }
     })
     .catch((error) => console.error("Error fetching high score:", error));
 }
 
-function saveHighScore() {
-  fetch("/save-high-score", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ highScore }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.success) {
-        console.error("Error saving high score:", data.error);
-      }
-    })
-    .catch((error) => console.error("Error saving high score:", error));
+async function saveHighScore(name, score) {
+  try {
+    const response = await fetch("/save-high-score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, score }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      console.log("Congratulations! You have reached the highest score.");
+    } else {
+      console.error(result.error);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function handleHighScoreName(score) {
+  const name = prompt(
+    "Congratulations! You have reached the highest score. Please enter your name:"
+  );
+
+  if (name) {
+    saveHighScore(name, score);
+  } else {
+    alert("Please enter a valid name to save your high score.");
+  }
 }
 
 /**

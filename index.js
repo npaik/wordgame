@@ -3,7 +3,6 @@ const app = express();
 const path = require("path");
 const database = require("./database");
 
-
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -15,11 +14,11 @@ app.get("/", (req, res) => {
 });
 
 app.post("/save-high-score", async (req, res) => {
-  const { highScore } = req.body;
+  const { name, score } = req.body;
   try {
     const [result] = await database.query(
-      "INSERT INTO high_scores (score) VALUES (?)",
-      [highScore]
+      "INSERT INTO high_scores (name, score) VALUES (?, ?)",
+      [name, score]
     );
     res.json({ success: true });
   } catch (error) {
@@ -30,9 +29,13 @@ app.post("/save-high-score", async (req, res) => {
 app.get("/get-high-score", async (req, res) => {
   try {
     const [rows] = await database.query(
-      "SELECT MAX(score) as highScore FROM high_scores"
+      "SELECT name, score FROM high_scores ORDER BY score DESC LIMIT 1"
     );
-    res.json({ success: true, highScore: rows[0].highScore || 0 });
+    if (rows.length > 0) {
+      res.json({ success: true, name: rows[0].name, highScore: rows[0].score });
+    } else {
+      res.json({ success: true, name: null, highScore: 0 });
+    }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
