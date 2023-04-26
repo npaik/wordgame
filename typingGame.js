@@ -231,3 +231,4 @@ function restartGame() {
 }
 
 startButton.addEventListener("click", startGame);
+
