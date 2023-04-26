@@ -1,11 +1,16 @@
 const canvas = document.getElementById("gameBlock");
 const ctx = canvas.getContext("2d");
-const currentInputElement = document.getElementById("currentInput");
+const currentInputElement = document.getElementById("inputWords");
 const startButton = document.getElementById("startButton");
 const scoreElement = document.getElementById("scoreValue");
 const timerElement = document.getElementById("timerValue");
 const restartButton = document.getElementById("restartButton");
 const highScoreElement = document.getElementById("highScoreValue");
+const inputWordsElement = document.getElementById("inputWords");
+const animatedWordsContainer = document.getElementById(
+  "animatedWordsContainer"
+);
+
 const planetsAndStars = [
   "Mercury",
   "Venus",
@@ -47,6 +52,7 @@ let score = 0;
 let highScore = 0;
 let gameInterval;
 let gameOver = false;
+let cannonball = null;
 
 /**
  * Function to add a new falling word to the game
@@ -103,6 +109,21 @@ document.addEventListener("keydown", (e) => {
       (wordObj) => wordObj.word === currentInput
     );
     if (wordIndex !== -1) {
+      cannonball = {
+        x: canvas.width / 2,
+        y: canvas.height - 20,
+        targetX: fallingWords[wordIndex].x,
+        targetY: fallingWords[wordIndex].y,
+      };
+
+      // Add the vanishing words animation
+      const wordElement = document.createElement("span");
+      wordElement.textContent = fallingWords[wordIndex].word;
+      wordElement.style.left = `${fallingWords[wordIndex].x}px`;
+      wordElement.style.top = `${fallingWords[wordIndex].y}px`;
+      wordElement.classList.add("breakingWord");
+      animatedWordsContainer.appendChild(wordElement);
+
       fallingWords.splice(wordIndex, 1);
       score++;
       scoreElement.textContent = score;
@@ -114,12 +135,47 @@ document.addEventListener("keydown", (e) => {
 });
 
 /**
+ * Function to draw the cannonball on the canvas
+ */
+
+function drawCannonball() {
+  if (cannonball) {
+    ctx.beginPath();
+    ctx.arc(cannonball.x, cannonball.y, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "black";
+    ctx.fill();
+  }
+}
+
+/**
  * Function to draw and clear the falling words on the canvas
  */
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFallingWords();
+  drawCannonball();
+}
+
+/**
+ * Function to update the position of the cannonball
+ */
+
+function updateCannonball() {
+  if (cannonball) {
+    const dx = cannonball.targetX - cannonball.x;
+    const dy = cannonball.targetY - cannonball.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 5) {
+      cannonball = null;
+    } else {
+      const moveX = (dx / distance) * 5;
+      const moveY = (dy / distance) * 5;
+      cannonball.x += moveX;
+      cannonball.y += moveY;
+    }
+  }
 }
 
 /**
@@ -128,6 +184,7 @@ function draw() {
 
 function update() {
   updateFallingWords();
+  updateCannonball();
 
   if (fallingWords.some((wordObj) => wordObj.y > canvas.height)) {
     gameOver = true;

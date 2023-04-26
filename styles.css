@@ -1,3 +1,26 @@
+.breakingWord {
+  position: absolute;
+  animation: breaking 0.5s forwards;
+}
+
+@keyframes breaking {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+#animatedWordsContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -51,9 +74,9 @@ body {
 
 #currentInput {
   display: block;
-  font-size: 20px;
   position: absolute;
   left: 50%;
+  bottom: 40px;
   transform: translateX(-50%);
 }
 
@@ -64,4 +87,25 @@ body {
   transform: translate(-50%, -50%);
   font-size: 40px;
   font-weight: bold;
+}
+
+#currentInput {
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+}
+
+.cannonIcon {
+  font-size: 36px;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+#inputWords {
+  font-size: 20px;
+  display: block;
+  text-align: center;
+  margin-top: 5px;
 }
