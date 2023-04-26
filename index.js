@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -51,6 +52,11 @@ app.get("/get-top-scores", async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+app.get("/planets-and-stars", (req, res) => {
+  const planetsAndStars = JSON.parse(process.env.PLANETS_AND_STARS);
+  res.json(planetsAndStars);
 });
 
 const port = process.env.PORT || 3000;

@@ -11,7 +11,17 @@ const animatedWordsContainer = document.getElementById(
   "animatedWordsContainer"
 );
 
-const planetsAndStars = process.env.PLANETS_AND_STARS.split(",");
+let planetsAndStars = [];
+
+async function fetchPlanetsAndStars() {
+  try {
+    const response = await fetch("/planets-and-stars");
+    planetsAndStars = await response.json();
+  } catch (error) {
+    console.error("Error fetching planets and stars:", error);
+  }
+}
+fetchPlanetsAndStars();
 
 let fallingWords = [];
 let currentInput = "";
