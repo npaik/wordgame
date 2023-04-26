@@ -1,9 +1,11 @@
-const canvas = document.getElementById("game-block");
+const canvas = document.getElementById("gameBlock");
 const ctx = canvas.getContext("2d");
-const currentInputElement = document.getElementById("current-input");
-const startButton = document.getElementById("start-button");
-const scoreElement = document.getElementById("score-value");
-const timerElement = document.getElementById("timer-value");
+const currentInputElement = document.getElementById("currentInput");
+const startButton = document.getElementById("startButton");
+const scoreElement = document.getElementById("scoreValue");
+const timerElement = document.getElementById("timerValue");
+const restartButton = document.getElementById("restartButton");
+const highScoreElement = document.getElementById("highScoreValue");
 const planetsAndStars = [
   "Mercury",
   "Venus",
@@ -42,6 +44,7 @@ const planetsAndStars = [
 let fallingWords = [];
 let currentInput = "";
 let score = 0;
+let highScore = 0;
 let gameInterval;
 let gameOver = false;
 
@@ -137,9 +140,15 @@ function update() {
  */
 
 function gameOverDisplay() {
+  if (score > highScore) {
+    highScore = score;
+    highScoreElement.textContent = highScore;
+  }
+  restartButton.style.display = "block";
+  highScoreElement.parentElement.style.display = "block";
   const gameOverDiv = document.createElement("div");
   gameOverDiv.innerHTML = "Game Over";
-  gameOverDiv.classList.add("game-over");
+  gameOverDiv.classList.add("gameOver");
   canvas.parentElement.appendChild(gameOverDiv);
   fallingWords = [];
   draw();
@@ -197,4 +206,25 @@ function startGame() {
   countdown();
 }
 
+/**
+ * Function to restart the game
+ */
+
+function restartGame() {
+  gameOver = false;
+  startButton.disabled = false;
+  restartButton.style.display = "none";
+  score = 0;
+  scoreElement.textContent = score;
+  timerElement.textContent = "0:30";
+  currentInputElement.textContent = "";
+  currentInput = "";
+  const gameOverDiv = document.querySelector(".gameOver");
+  if (gameOverDiv) {
+    gameOverDiv.remove();
+  }
+  startGame();
+}
+
 startButton.addEventListener("click", startGame);
+restartButton.addEventListener("click", restartGame);
