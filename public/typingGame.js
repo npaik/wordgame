@@ -272,6 +272,7 @@ function gameOverDisplay() {
   canvas.parentElement.appendChild(gameOverDiv);
   fallingWords = [];
   draw();
+  displayTopScores(); // Add this line
 }
 
 /**
@@ -284,6 +285,32 @@ function gameLoop() {
     draw();
     requestAnimationFrame(gameLoop);
   }
+}
+
+function displayTopScores() {
+  fetch("/get-top-scores")
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        const topScoresContainer = document.createElement("div");
+        topScoresContainer.classList.add("top-scores");
+
+        const topScoresTitle = document.createElement("h2");
+        topScoresTitle.textContent = "Top 10 Scores";
+        topScoresContainer.appendChild(topScoresTitle);
+
+        const topScoresList = document.createElement("ul");
+        data.highScores.forEach(({ name, score }) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = `${name} - ${score}`;
+          topScoresList.appendChild(listItem);
+        });
+
+        topScoresContainer.appendChild(topScoresList);
+        canvas.parentElement.appendChild(topScoresContainer);
+      }
+    })
+    .catch((error) => console.error("Error fetching top scores:", error));
 }
 
 /**
