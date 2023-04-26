@@ -17,7 +17,7 @@ const dbConfigLocal = {
   host: "localhost",
   user: "root",
   password: "skrgus84",
-  database: "library",
+  database: "wordgame",
   multipleStatements: false,
   namedPlaceholders: true,
 };
