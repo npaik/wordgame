@@ -144,7 +144,7 @@ function gameOverDisplay() {
     highScore = score;
     highScoreElement.textContent = highScore;
   }
-  restartButton.style.display = "block";
+  startButton.disabled = false;
   highScoreElement.parentElement.style.display = "block";
   const gameOverDiv = document.createElement("div");
   gameOverDiv.innerHTML = "Game Over";
@@ -199,6 +199,10 @@ function countdown() {
  */
 
 function startGame() {
+  startButton.textContent = "Restart";
+  startButton.removeEventListener("click", startGame);
+  startButton.addEventListener("click", restartGame);
+
   startButton.disabled = true;
   addFallingWord();
   gameLoop();
@@ -213,7 +217,7 @@ function startGame() {
 function restartGame() {
   gameOver = false;
   startButton.disabled = false;
-  restartButton.style.display = "none";
+  highScoreElement.parentElement.style.display = "block";
   score = 0;
   scoreElement.textContent = score;
   timerElement.textContent = "0:30";
@@ -227,5 +231,3 @@ function restartGame() {
 }
 
 startButton.addEventListener("click", startGame);
-restartButton.addEventListener("click", restartGame);
-
