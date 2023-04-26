@@ -287,6 +287,10 @@ function gameLoop() {
   }
 }
 
+/**
+ * Function to display the top 10 scores
+ */
+
 function displayTopScores() {
   fetch("/get-top-scores")
     .then((response) => response.json())
