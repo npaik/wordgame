@@ -11,40 +11,7 @@ const animatedWordsContainer = document.getElementById(
   "animatedWordsContainer"
 );
 
-const planetsAndStars = [
-  "Mercury",
-  "Venus",
-  "Earth",
-  "Mars",
-  "Jupiter",
-  "Saturn",
-  "Uranus",
-  "Neptune",
-  "Sun",
-  "Moon",
-  "Pluto",
-  "Tatooine",
-  "Alderaan",
-  "Dagobah",
-  "Hoth",
-  "Endor",
-  "Naboo",
-  "Bespin",
-  "Coruscant",
-  "Kamino",
-  "Geonosis",
-  "Mustafar",
-  "Jakku",
-  "Takodana",
-  "Crait",
-  "Exegol",
-  "Scarif",
-  "Eadu",
-  "Wobani",
-  "Jedha",
-  "Pasaana",
-  "Kijimi",
-];
+const planetsAndStars = process.env.PLANETS_AND_STARS.split(",");
 
 let fallingWords = [];
 let currentInput = "";
