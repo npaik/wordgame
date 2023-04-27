@@ -11,40 +11,33 @@ const animatedWordsContainer = document.getElementById(
   "animatedWordsContainer"
 );
 
-const planetsAndStars = [
-  "Mercury",
-  "Venus",
-  "Earth",
-  "Mars",
-  "Jupiter",
-  "Saturn",
-  "Uranus",
-  "Neptune",
-  "Sun",
-  "Moon",
-  "Pluto",
-  "Tatooine",
-  "Alderaan",
-  "Dagobah",
-  "Hoth",
-  "Endor",
-  "Naboo",
-  "Bespin",
-  "Coruscant",
-  "Kamino",
-  "Geonosis",
-  "Mustafar",
-  "Jakku",
-  "Takodana",
-  "Crait",
-  "Exegol",
-  "Scarif",
-  "Eadu",
-  "Wobani",
-  "Jedha",
-  "Pasaana",
-  "Kijimi",
-];
+/**
+ * Function to fetch the planet names from the Star Wars API
+ */
+
+async function fetchPlanets() {
+  try {
+    const response = await fetch("https://swapi.dev/api/planets/");
+    const data = await response.json();
+    const planets = data.results.map((planet) => planet.name);
+    return planets;
+  } catch (error) {
+    console.error("Error fetching planets:", error);
+    return [];
+  }
+}
+
+/**
+ * Update the planetsAndStars array with the fetched planet names
+ */
+async function updatePlanetsAndStars() {
+  const planets = await fetchPlanets();
+  if (planets.length > 0) {
+    planetsAndStars = planets;
+  }
+}
+
+updatePlanetsAndStars();
 
 let fallingWords = [];
 let currentInput = "";
@@ -100,6 +93,8 @@ function updateFallingWords() {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Backspace") {
     currentInput = currentInput.slice(0, -1);
+  } else if (e.key === " ") {
+    currentInput += " ";
   } else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
     currentInput += e.key;
   }
